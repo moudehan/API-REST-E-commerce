@@ -12,6 +12,9 @@ export class Utilisateur {
   @Column()
   email: string;
 
+  @Column()
+  password: string;
+
   @OneToMany(() => Commande, (commande) => commande.utilisateur)
   commandes: Commande[];
 }

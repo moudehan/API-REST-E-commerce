@@ -6,39 +6,47 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
-import { Product } from 'src/entities/product.entity';
 import { ProductService } from './product.service';
+import { createProductDto } from './DTO/create-product.dto';
+import { updateProductDto } from './DTO/update-product.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('produits')
 export class ProductController {
   constructor(private readonly produitService: ProductService) {}
 
   @Get()
-  getAllProduits(): Product[] {
+  @UseGuards(AuthGuard)
+  getAllProduits() {
     return this.produitService.getAllProduits();
   }
 
   @Get(':id')
-  getProduitById(@Param('id') id: number): Product {
+  @UseGuards(AuthGuard)
+  getProduitById(@Param('id') id: number) {
     return this.produitService.getProduitById(+id);
   }
 
   @Post()
-  createProduit(@Body() produit: Product): Product {
+  @UseGuards(AuthGuard)
+  createProduit(@Body() produit: createProductDto) {
     return this.produitService.createProduit(produit);
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   updateProduit(
     @Param('id') id: number,
-    @Body() updatedProduit: Product,
-  ): Product {
+    @Body() updatedProduit: updateProductDto,
+  ) {
     return this.produitService.updateProduit(+id, updatedProduit);
   }
 
   @Delete(':id')
-  deleteProduit(@Param('id') id: number): Product {
+  @UseGuards(AuthGuard)
+  deleteProduit(@Param('id') id: number) {
     return this.produitService.deleteProduit(+id);
   }
 }

@@ -14,7 +14,8 @@ model Utilisateur {
   id      Int       @id @default(autoincrement())
   nom     String
   email    String  @unique
-  commandesss Commande[]
+  password    String @unique
+  commande Commande[]
 }
 
 model Commande {
@@ -23,7 +24,7 @@ model Commande {
   utilisateurId Int
   produit  Produit @relation(fields: [produitId], references: [id])
   produitId Int
-  quantity  Int
+  quantite  Int
 }
 
 model Produit {
@@ -31,5 +32,5 @@ model Produit {
   nom         String
   description String
   prix        Float
-  commandes   Commande[]
+  commande   Commande[]
 }

@@ -6,8 +6,9 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
-import { Commande } from '../entities/commande.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { CommandeService } from './commande.service';
 import { createCommandeDto } from './DTO/create-commande.dto';
 
@@ -16,21 +17,25 @@ export class CommandeController {
   constructor(private readonly commandeService: CommandeService) {}
 
   @Get()
+  @UseGuards(AuthGuard)
   getAllCommandes() {
     return this.commandeService.getAllCommandes();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   getCommandeById(@Param('id') id: number) {
     return this.commandeService.getCommandeById(+id);
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   createCommande(@Body() commande: createCommandeDto) {
     return this.commandeService.createCommande(commande);
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard)
   updateCommande(
     @Param('id') id: number,
     @Body() updatedCommande: createCommandeDto,
@@ -39,6 +44,7 @@ export class CommandeController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard)
   deleteCommande(@Param('id') id: number) {
     return this.commandeService.deleteCommande(+id);
   }

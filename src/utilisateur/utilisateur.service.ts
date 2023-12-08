@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Utilisateur } from '../entities/utilisateur.entity';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { createUserDto } from './DTO/create-user.dto';
+import { updateUserDto } from './DTO/update-user.dto';
 export type User = any;
 
 @Injectable()
@@ -33,7 +33,7 @@ export class UtilisateurService {
     });
   }
 
-  async updateUtilisateur(id: number, utilisateur: createUserDto) {
+  async updateUtilisateur(id: number, utilisateur: updateUserDto) {
     const updateUser = await this.prisma.utilisateur.update({
       data: utilisateur,
       where: { id },
@@ -56,5 +56,20 @@ export class UtilisateurService {
       data: deleteUser,
       message: `Success delete ${id}`,
     };
+  }
+
+  async getUserByPasswordAndEmail(password: string, email: string) {
+    try {
+      const user = await this.prisma.utilisateur.findUnique({
+        where: {
+          password: password,
+          email: email,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      console.error("Erreur lors de la recherche de l'utilisateur :", error);
+    }
   }
 }

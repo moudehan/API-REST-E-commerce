@@ -13,6 +13,6 @@ export class Commande {
   @ManyToOne(() => Utilisateur, (utilisateur) => utilisateur.commandes)
   utilisateur: Utilisateur;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, (produit) => produit.commandes)
   produit: Product;
 }

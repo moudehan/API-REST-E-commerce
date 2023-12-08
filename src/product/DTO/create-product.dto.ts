@@ -1,10 +1,9 @@
 import { IsString } from 'class-validator';
 
-export class createUserDto {
+export class createProductDto {
   @IsString()
   nom: string;
   @IsString()
-  password: string;
-  @IsString()
-  email: string;
+  description: string;
+  prix: number;
 }

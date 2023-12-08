@@ -1,44 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { Product } from 'src/entities/product.entity';
+import { createProductDto } from './DTO/create-product.dto';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
 
 @Injectable()
 export class ProductService {
-  private produits: Product[] = [];
+  constructor(private prisma: PrismaService) {}
 
-  createProduit(produit: Product): Product {
-    produit.id = Date.now();
-    this.produits.push(produit);
-    return produit;
+  async createProduit(produit: createProductDto) {
+    const createdProduct = await this.prisma.produit.create({
+      data: produit,
+    });
+    return {
+      statusCode: 200,
+      data: createdProduct,
+    };
   }
 
-  getAllProduits(): Product[] {
-    return this.produits;
+  async getAllProduits() {
+    return await this.prisma.produit.findMany();
   }
 
-  getCountOfProduits(): number {
-    return this.produits.length;
+  async getCountOfProduits() {
+    return this.prisma.produit.count();
   }
 
-  getProduitById(id: number): Product {
-    return this.produits.find((produit) => produit.id === id);
+  async getProduitById(id: number) {
+    return this.prisma.produit.findUnique({
+      where: { id },
+    });
   }
 
-  updateProduit(id: number, updatedProduit: Product): Product {
-    const index = this.produits.findIndex((produit) => produit.id === id);
-    if (index !== -1) {
-      this.produits[index] = { ...updatedProduit, id };
-      return this.produits[index];
-    }
-    return null;
+  async updateProduit(id: number, produit: createProductDto) {
+    const updateProduct = await this.prisma.produit.update({
+      data: produit,
+      where: { id },
+    });
+    return {
+      statusCode: 200,
+      data: updateProduct,
+    };
   }
 
-  deleteProduit(id: number): Product {
-    const index = this.produits.findIndex((produit) => produit.id === id);
-    if (index !== -1) {
-      const deletedProduit = this.produits[index];
-      this.produits.splice(index, 1);
-      return deletedProduit;
-    }
-    return null;
+  async deleteProduit(id: number) {
+    const deleteProduct = await this.prisma.produit.delete({ where: { id } });
+
+    return {
+      statusCode: 200,
+      data: deleteProduct,
+      message: `Success delete ${id}`,
+    };
   }
 }

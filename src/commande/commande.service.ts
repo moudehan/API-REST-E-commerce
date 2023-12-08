@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Commande } from '../entities/commande.entity';
 import { ProductService } from 'src/product/product.service';
 import { UtilisateurService } from 'src/utilisateur/utilisateur.service';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
@@ -33,7 +32,7 @@ export class CommandeService {
         `Produit avec l'ID ${commande.produitId} non trouvé`,
       );
     }
-    return createCommandeDto;
+    return createdCommande;
   }
 
   async getAllCommandes() {
@@ -62,7 +61,7 @@ export class CommandeService {
   }
 
   async deleteCommande(id: number) {
-    const deleteC = this.prisma.commande.delete({
+    const deleteC = await this.prisma.commande.delete({
       where: { id },
     });
     return {

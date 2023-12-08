@@ -9,16 +9,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(id, email) {
-    console.log(` ID=${id} et email=${email}`);
-    // récupérer depuis la BDD
-    const specificUser = { id: 1, email: 'test@gmail.com' };
+  async signIn(password: string, email: string) {
+    const user = await this.usersService.getUserByPasswordAndEmail(
+      password,
+      email,
+    );
 
-    if (id !== specificUser.id || email !== specificUser.email) {
+    if (!user) {
       throw new UnauthorizedException();
     }
 
-    const payload = { id: specificUser.id, email: specificUser.email };
+    const payload = { password: user.password, email: user.email };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
