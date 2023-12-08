@@ -1,4 +1,3 @@
-// src/services/utilisateur.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Utilisateur } from '../entities/utilisateur.entity';
 export type User = any;
@@ -8,8 +7,7 @@ export class UtilisateurService {
   private readonly users = [
     {
       id: 1,
-      nom: 'john',
-      email: 'changeme',
+      email: 'test@gmail.com',
     },
     {
       id: 2,
