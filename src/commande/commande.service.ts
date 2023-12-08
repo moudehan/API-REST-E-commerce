@@ -2,70 +2,73 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Commande } from '../entities/commande.entity';
 import { ProductService } from 'src/product/product.service';
 import { UtilisateurService } from 'src/utilisateur/utilisateur.service';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { createCommandeDto } from './DTO/create-commande.dto';
 
 @Injectable()
 export class CommandeService {
-  private commandes: Commande[] = [];
   constructor(
     private utilisateurService: UtilisateurService,
     private productService: ProductService,
+    private prisma: PrismaService,
   ) {}
 
-  createCommande(commande: Commande): Commande {
+  async createCommande(commande: createCommandeDto) {
+    const createdCommande = await this.prisma.commande.create({
+      data: commande,
+    });
+
     const utilisateur = this.utilisateurService.getUtilisateurById(
-      commande.utilisateur.id,
+      commande.utilisateurId,
     );
     if (!utilisateur) {
       throw new NotFoundException(
-        `Utilisateur avec l'ID ${commande.utilisateur.id} non trouvé`,
+        `Utilisateur avec l'ID ${commande.utilisateurId} non trouvé`,
       );
     }
 
-    const produit = this.productService.getProduitById(commande.produit.id);
+    const produit = this.productService.getProduitById(commande.produitId);
     if (!produit) {
       throw new NotFoundException(
-        `Produit avec l'ID ${commande.produit.id} non trouvé`,
+        `Produit avec l'ID ${commande.produitId} non trouvé`,
       );
     }
-
-    commande.id = Date.now();
-    this.commandes.push(commande);
-    return commande;
+    return createCommandeDto;
   }
 
-  getAllCommandes(): Commande[] {
-    return this.commandes;
+  async getAllCommandes() {
+    return await this.prisma.commande.findMany();
   }
 
-  getCountOfCommandes(): number {
-    return this.commandes.length;
+  getCountOfCommandes() {
+    return this.prisma.commande.count();
   }
 
-  getCommandeById(id: number): Commande {
-    return this.commandes.find((commande) => commande.id === id);
+  getCommandeById(id: number) {
+    return this.prisma.utilisateur.findUnique({
+      where: { id },
+    });
   }
 
-  updateCommande(id: number, updatedCommande: Partial<Commande>): Commande {
-    const index = this.commandes.findIndex((commande) => commande.id === id);
-
-    if (index !== -1) {
-      if (updatedCommande.quantite !== undefined) {
-        this.commandes[index].quantite = updatedCommande.quantite;
-      }
-
-      return this.commandes[index];
-    }
-
-    throw new NotFoundException(`Commande introuvable`);
+  async updateCommande(id: number, commande: createCommandeDto) {
+    const updateUser = await this.prisma.commande.update({
+      data: commande,
+      where: { id },
+    });
+    return {
+      statusCode: 200,
+      data: updateUser,
+    };
   }
 
-  deleteCommande(id: number): Commande {
-    const index = this.commandes.findIndex((commande) => commande.id === id);
-    if (index !== -1) {
-      const deletedCommande = this.commandes[index];
-      this.commandes.splice(index, 1);
-      return deletedCommande;
-    }
-    throw new NotFoundException(`Commande introuvable`);
+  async deleteCommande(id: number) {
+    const deleteC = this.prisma.commande.delete({
+      where: { id },
+    });
+    return {
+      statusCode: 200,
+      data: deleteC,
+      message: `Success delete ${id}`,
+    };
   }
 }

@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { UtilisateurModule } from './utilisateur/utilisateur.module';
 import { ProductModule } from './product/product.module';
 import { CommandeModule } from './commande/commande.module';
+import { PrismaModule } from './modules/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CommandeModule } from './commande/commande.module';
     UtilisateurModule,
     CommandeModule,
     ProductModule,
+    PrismaModule,
   ],
   providers: [ProductService, UtilisateurService, CommandeService],
   controllers: [ProductController, UtilisateurController, CommandeController],

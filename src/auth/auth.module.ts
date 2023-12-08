@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { jwtConstants } from './auth.constants';
 import { UtilisateurService } from 'src/utilisateur/utilisateur.service';
 import { UtilisateurModule } from 'src/utilisateur/utilisateur.module';
+import { PrismaModule } from 'src/modules/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UtilisateurModule } from 'src/utilisateur/utilisateur.module';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '1h' },
     }),
+    PrismaModule,
   ],
   providers: [AuthService, UtilisateurService],
   controllers: [AuthController],

@@ -11,6 +11,7 @@ import {
 import { Utilisateur } from '../entities/utilisateur.entity';
 import { UtilisateurService } from './utilisateur.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { createUserDto } from './DTO/create-user.dto';
 
 @Controller('utilisateurs')
 export class UtilisateurController {
@@ -18,30 +19,30 @@ export class UtilisateurController {
 
   @Get()
   @UseGuards(AuthGuard)
-  getAllUtilisateurs(): Utilisateur[] {
+  getAllUtilisateurs() {
     return this.utilisateurService.getAllUtilisateurs();
   }
 
   @Get(':id')
-  getUtilisateurById(@Param('id') id: string): Utilisateur {
+  getUtilisateurById(@Param('id') id: string) {
     return this.utilisateurService.getUtilisateurById(+id);
   }
 
   @Post()
-  createUtilisateur(@Body() utilisateur: Utilisateur): Utilisateur {
+  createUtilisateur(@Body() utilisateur: createUserDto) {
     return this.utilisateurService.createUtilisateur(utilisateur);
   }
 
   @Put(':id')
   updateUtilisateur(
     @Param('id') id: number,
-    @Body() updatedUtilisateur: Utilisateur,
-  ): Utilisateur {
+    @Body() updatedUtilisateur: createUserDto,
+  ) {
     return this.utilisateurService.updateUtilisateur(+id, updatedUtilisateur);
   }
 
   @Delete(':id')
-  deleteUtilisateur(@Param('id') id: number): Utilisateur {
+  deleteUtilisateur(@Param('id') id: number) {
     return this.utilisateurService.deleteUtilisateur(+id);
   }
 }

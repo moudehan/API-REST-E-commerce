@@ -13,14 +13,17 @@ datasource db {
 model Utilisateur {
   id      Int       @id @default(autoincrement())
   nom     String
-  email   String
-  commandes Commande[]
+  email    String  @unique
+  commandesss Commande[]
 }
 
 model Commande {
   id           Int       @id @default(autoincrement())
-    utilisateur  Utilisateur @relation(fields: [utilisateurId], references: [id])
+  utilisateur  Utilisateur @relation(fields: [utilisateurId], references: [id])
   utilisateurId Int
+  produit  Produit @relation(fields: [produitId], references: [id])
+  produitId Int
+  quantity  Int
 }
 
 model Produit {
@@ -28,4 +31,5 @@ model Produit {
   nom         String
   description String
   prix        Float
+  commandes   Commande[]
 }

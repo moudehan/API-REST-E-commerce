@@ -1,63 +1,60 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Utilisateur } from '../entities/utilisateur.entity';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { createUserDto } from './DTO/create-user.dto';
 export type User = any;
 
 @Injectable()
 export class UtilisateurService {
-  private readonly users = [
-    {
-      id: 1,
-      email: 'test@gmail.com',
-    },
-    {
-      id: 2,
-      nom: 'maria',
-      email: 'guess',
-    },
-  ];
-  private utilisateurs: Utilisateur[] = [];
+  constructor(private prisma: PrismaService) {}
 
-  createUtilisateur(utilisateur: Utilisateur): Utilisateur {
-    utilisateur.id = Date.now();
-    this.utilisateurs.push(utilisateur);
-    return utilisateur;
+  async createUtilisateur(utilisateur: createUserDto) {
+    const createdUtilisateur = await this.prisma.utilisateur.create({
+      data: utilisateur,
+    });
+
+    return {
+      statusCode: 200,
+      data: createdUtilisateur,
+    };
   }
 
-  getAllUtilisateurs(): Utilisateur[] {
-    return this.utilisateurs;
+  async getAllUtilisateurs() {
+    return await this.prisma.utilisateur.findMany();
   }
 
-  getCountOfUtilisateurs(): number {
-    return this.utilisateurs.length;
+  getCountOfUtilisateurs() {
+    return this.prisma.utilisateur.count();
   }
 
-  getUtilisateurById(id: number): Utilisateur {
-    return this.utilisateurs.find((utilisateur) => utilisateur.id === id);
+  getUtilisateurById(id: number) {
+    return this.prisma.utilisateur.findUnique({
+      where: { id },
+    });
   }
 
-  updateUtilisateur(id: number, updatedUtilisateur: Utilisateur): Utilisateur {
-    const index = this.utilisateurs.findIndex(
-      (utilisateur) => utilisateur.id === id,
-    );
-    if (index !== -1) {
-      this.utilisateurs[index] = { ...updatedUtilisateur, id };
-      return this.utilisateurs[index];
-    }
-    return null;
+  async updateUtilisateur(id: number, utilisateur: createUserDto) {
+    const updateUser = await this.prisma.utilisateur.update({
+      data: utilisateur,
+      where: { id },
+    });
+    return {
+      statusCode: 200,
+      data: updateUser,
+    };
   }
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.email === username);
+  async findOne(id: number) {
+    return this.prisma.utilisateur.findUnique({ where: { id } });
   }
-  deleteUtilisateur(id: number): Utilisateur {
-    const index = this.utilisateurs.findIndex(
-      (utilisateur) => utilisateur.id === id,
-    );
-    if (index !== -1) {
-      const deletedUtilisateur = this.utilisateurs[index];
-      this.utilisateurs.splice(index, 1);
-      return deletedUtilisateur;
-    }
-    return null;
+
+  async deleteUtilisateur(id: number) {
+    const deleteUser = await this.prisma.utilisateur.delete({ where: { id } });
+
+    return {
+      statusCode: 200,
+      data: deleteUser,
+      message: `Success delete ${id}`,
+    };
   }
 }
