@@ -1,4 +1,3 @@
-// src/entities/commande.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Utilisateur } from './utilisateur.entity';
 import { Product } from './product.entity';

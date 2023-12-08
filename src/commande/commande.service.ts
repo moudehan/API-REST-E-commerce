@@ -1,7 +1,5 @@
-// src/services/commande.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Commande } from '../entities/commande.entity';
-import { Utilisateur } from '../entities/utilisateur.entity';
 import { ProductService } from 'src/product/product.service';
 import { UtilisateurService } from 'src/utilisateur/utilisateur.service';
 
