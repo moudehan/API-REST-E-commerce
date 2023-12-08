@@ -1,0 +1,7 @@
+services:
+  - name: Api-rest-e-commerce
+    buildCommand: npm install --production
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
